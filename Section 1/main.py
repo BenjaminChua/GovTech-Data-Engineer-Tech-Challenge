@@ -1,13 +1,15 @@
 import pandas as pd
-import re
+from re import findall
 import numpy as np
-import hashlib
+from hashlib import sha256
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
 
 '''
 input: name of dataset (assumed to be in inputs folder and in csv format)
 output: successful and unsuccessful applicants (in respective output folders)
 '''
-def main(dataset):
+def main(dataset='applications_dataset.csv'):
   # read dataset
   ori_df = pd.read_csv(f'inputs/{dataset}')
   df = ori_df.copy()
@@ -15,7 +17,7 @@ def main(dataset):
   print(df.shape)
 
   # format mobile_no: check for only digits, length == 8
-  df['mobile_no'] = df['mobile_no'].apply(lambda x: ''.join(re.findall(r'\d+', x)))
+  df['mobile_no'] = df['mobile_no'].apply(lambda x: ''.join(findall(r'\d+', x)))
   df['still_successful'] = df['mobile_no'].apply(lambda x: True if len(x) == 8 else False)
 
   # keep unsuccessful into a list of indexes
@@ -49,7 +51,7 @@ def main(dataset):
       non_saluation_words = []
       for word in split_name:
         # word has more than 2 capital letters or contains .or is a known salutation
-        if not (len(re.findall(r'[A-Z]', word)) >= 2 or '.' in word or word in ['Mr', 'Miss', 'Madam', 'Mdm', 'Jr']):
+        if not (len(findall(r'[A-Z]', word)) >= 2 or '.' in word or word in ['Mr', 'Miss', 'Madam', 'Mdm', 'Jr']):
           non_saluation_words.append(word)
       if len(non_saluation_words) == 2:
         first_name, last_name = non_saluation_words
@@ -70,7 +72,7 @@ def main(dataset):
   df = df[~df['first_name'].isna() & ~df['last_name'].isna()]
 
   # format DOB: Uses dayfirst for vague dates like 05/08/2006
-  df['date_of_birth'] = pd.to_datetime(df['date_of_birth'], dayfirst=True)
+  df['date_of_birth'] = pd.to_datetime(df['date_of_birth'], format='mixed', dayfirst=True)
 
   # calculate age and check if above 18
   age_in_days = pd.to_datetime('01/01/2022', format='%d/%m/%Y', dayfirst=True) - df['date_of_birth']
@@ -88,7 +90,7 @@ def main(dataset):
 
   # Validity checks are complete, generate Membership IDs
   # Step 1: Hash birthday and truncate to first 5 digits
-  hashed_trunc_bdae = df['date_of_birth'].apply(lambda x: hashlib.sha256(x.encode('utf-8')).hexdigest()[:5])
+  hashed_trunc_bdae = df['date_of_birth'].apply(lambda x: sha256(x.encode('utf-8')).hexdigest()[:5])
   # Step 2: Last name + _ + hash_trunc_bdae
   df['membership_id'] = df['last_name'] + '_' + hashed_trunc_bdae
 
@@ -103,4 +105,12 @@ def main(dataset):
   df.to_csv('successful/successful_applicants.csv', index=False)
 
 if __name__ == "__main__":
-  main('applications_dataset_1.csv')
+  scheduler = BackgroundScheduler()
+  scheduler.add_job(main, 'interval', hours=1)
+  scheduler.start()
+
+  try:
+      while True:
+          time.sleep(2)
+  except (KeyboardInterrupt, SystemExit):
+      scheduler.shutdown()
