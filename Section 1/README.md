@@ -8,6 +8,7 @@
 ## Assumptions
 - Inputs are csv files
 - Data is pulled from these files instead of pushed from upstream
+- For a vague date like 05/08/2006, we assume dayfirst format (i.e. 05 is the day and 08 is the month)
 - Process input files in batches at hourly interval. Each batch is 1 csv file
 - Output are csv files in a file folder named outputs
 
