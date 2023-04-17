@@ -11,14 +11,15 @@
 - Process input files in batches at hourly interval. Each batch is 1 csv file
 - Output are csv files in a file folder named outputs
 
-## Validation Checks
+## Validation Checks (in order, only on those still valid)
 - Mobile Number == 8 digits
-- Age > 18 y/o as of 1 Jan 2022
 - Email with 3 parts: [alphanumerical]@[emailprovider].[com/net]
+- Name is required
+- Age > 18 y/o as of 1 Jan 2022
 
 ## Data Format
 - Name split into first_name and last_name
-  - Trim whitespaces start and end
+  - Trim leading and trailing whitespaces
   - Check for salutations
   - Remove if missing name
 - Birthday into YYYYMMDD format
@@ -26,4 +27,4 @@
 - Membership IDs with user last name + SHA256 hash of birthday
 
 ## Output
-- Save processed output files in output folder at hourly intervals
+- Save processed output files (both successful & unsucessful) in output folder at hourly intervals
