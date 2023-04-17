@@ -1,0 +1,5 @@
+venv
+Section 1/inputs/*
+Section 1/successful/*
+Section 1/unsuccessful/*
+.DS_STORE
