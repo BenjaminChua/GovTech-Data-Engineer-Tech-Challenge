@@ -1,12 +1,26 @@
 # Section 1: Data Pipelines
 
-## Instructions to use
+## Instructions to run
 1. Env set up using requirements.txt
-2. Add 2 datasets in csv format into inputs folder
+  ```
+  pip install -r requirements.txt
+  ```
+2. Add dataset in csv format into inputs folder named `applications_dataset.csv`
 3. Run main.py
+  ```
+  python main.py
+  ```
+4. Outputs in 1 hour as scheduled. Please change the scheduler in `main.py` for a quick run.
+  ```
+  scheduler.add_job(main, 'interval', seconds=10)
+  ```
+  OR remove the scheduling script and replace with
+  ```
+  main()
+  ```
 
 ## Assumptions
-- Inputs are csv files
+- Input is 1 csv file named applications_dataset.csv in the inputs folder
 - Data is pulled from these files instead of pushed from upstream
 - For a vague date like 05/08/2006, we assume dayfirst format (i.e. 05 is the day and 08 is the month)
 - Process input files in batches at hourly interval. Each batch is 1 csv file
