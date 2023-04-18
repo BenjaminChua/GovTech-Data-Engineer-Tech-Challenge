@@ -28,7 +28,7 @@ There are 4 tables namely members, items, transactions, transaction_items.
 SELECT membership_id, SUM(total_price) lifetime_spending FROM transactions GROUP BY membership_id ORDER BY lifetime_spending DESC LIMIT 10;
 ```
 ### Which are the top 3 items that are frequently bought by members
-`This assumes quantity rather than price or transaction count`
+_This assumes quantity rather than price or transaction count_
 ``` SQL
 SELECT item_id, SUM(quantity) lifetime_quantity_sold FROM transaction_items GROUP BY item_id ORDER BY lifetime_quantity_sold DESC LIMIT 3;
 ```
