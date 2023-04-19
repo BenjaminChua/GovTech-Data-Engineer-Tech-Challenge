@@ -2,29 +2,29 @@
 
 ## Instructions to run
 1. Env set up using requirements.txt
-  ```
-  pip install -r requirements.txt
-  ```
+    ```
+    pip install -r requirements.txt
+    ```
 2. Add dataset in csv format into inputs folder named `applications_dataset.csv`
 3. Run main.py
-  ```
-  python main.py
-  ```
+    ```
+    python main.py
+    ```
 4. Outputs in 1 hour as scheduled. Please change the scheduler in `main.py` for a quick run.
-  ```
-  scheduler.add_job(main, 'interval', seconds=10)
-  ```
-  OR remove the scheduling script and replace with
-  ```
-  main()
-  ```
+    ```
+    scheduler.add_job(main, 'interval', seconds=10)
+    ```
+    OR remove the scheduling script and replace with
+    ```
+    main()
+    ```
+5. Successful applicants are saved in a csv file named `successful_applicants.csv` under the `successful` folder while unsuccessful applicants are saved in a csv file named `unsuccessful_applicants.csv` under the `unsuccessful` folder
 
 ## Assumptions
 - Input is 1 csv file named applications_dataset.csv in the inputs folder
 - Data is pulled from these files instead of pushed from upstream
 - For a vague date like 05/08/2006, we assume dayfirst format (i.e. 05 is the day and 08 is the month)
 - Process input files in batches at hourly interval. Each batch is 1 csv file
-- Output are csv files in a file folder named outputs
 
 ## Validation Checks (in order, only on those still valid)
 - Mobile Number == 8 digits
